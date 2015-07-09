@@ -2,8 +2,10 @@ package com.acme.order.application;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +17,10 @@ import com.acme.order.pizza.PizzaType;
 @Configuration
 @ComponentScan("com.acme.order")
 public class SpringAnnotationBasedApplication {
+	
+	private final String url = "jdbc:mysql://localhost:3306/pizza-tutorial";
+	private final String user = "dbuser";
+	private final String password = "dbpass";
 
 	public static void main(String[] args) {
 		log.info("Spring XML based application");
@@ -38,5 +44,21 @@ public class SpringAnnotationBasedApplication {
 		log.info("Cancelled orders:{}", orderService.fetchCancelled());
 		log.info("Unprocessed orders:{}", orderService.fetchUnprocessed());
 	}
+	
+	
+	@Bean
+	public BasicDataSource createPool(){
+		BasicDataSource ds = new BasicDataSource();
+		ds.setDriverClassName("org.h2.Driver");
+		
+		ds.setUrl(url);
+		ds.setUsername(user);
+		ds.setPassword(password);
+		
+		ds.setInitialSize(5);
+		
+		return ds;
+	}
+	
 
 }
